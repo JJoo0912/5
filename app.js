@@ -1,8 +1,5 @@
 
-/* Fan Bubble App JS
- * Handles member list, profile view, chat view, nickname storage, data loading.
- */
-
+// 기존 코드 유지
 const MEMBER_LIST = [
   {id:"Gunil", display:"건일"},
   {id:"Jeongsu", display:"정수"},
@@ -12,7 +9,6 @@ const MEMBER_LIST = [
   {id:"Jooyeon", display:"주연"},
 ];
 
-// --- Utilities ---
 function qs(sel,root=document){return root.querySelector(sel);}
 function qsa(sel,root=document){return [...root.querySelectorAll(sel)];}
 function getParam(name){
@@ -54,11 +50,11 @@ function formatDateK(dateStr){
 function initArchive(){
   const listEl = qs("#archiveList");
   if(!listEl) return;
+  listEl.innerHTML = ""; // 기존 항목 제거
   MEMBER_LIST.forEach(m=>{
     const row=document.createElement("a");
     row.className="archive-row";
     row.href=`member.html?m=${m.id}`;
-
     row.innerHTML=`
       <span class="archive-row-avatar-wrap">
         <img class="archive-row-avatar" src="${profileSrc(m.id)}" alt="${m.display}"
@@ -101,12 +97,10 @@ function initChat(){
   const titleEl=qs("#chatMemberName");
   if(titleEl) titleEl.textContent=disp;
 
-  // ✅ 닉네임 없으면 모달 띄우기
   if(!getNickname()){
     openNickModal();
   }
 
-  // ✅ 채팅 데이터 불러오기
   loadChatData(id);
 }
 
@@ -198,29 +192,64 @@ function showImagePopup(src){
   document.body.appendChild(popup);
 }
 
-// ---- 페이지 부트스트랩 ----
+// ---- 페이지 초기화 ----
 document.addEventListener("DOMContentLoaded",()=>{
   const path=location.pathname;
   if(path.endsWith("index.html") || path.endsWith("/")){
     initArchive();
-  }else if(path.endsWith("member.html")){
-    initMember();
-  }else if(path.endsWith("chat.html")){
-    initChat();
 
-    const exitBtn = document.getElementById('exitButton');
-    if(exitBtn){
-      exitBtn.addEventListener('click', () => {
-        window.location.href = 'index.html';
-      });
-      // 탭바의 Members 버튼 클릭 시 멤버 리스트를 다시 렌더링
-document.getElementById("tabMembersBtn").addEventListener("click", () => {
-  const archiveList = document.getElementById("archiveList");
-  if (archiveList) {
-    archiveList.innerHTML = "";  // 기존 목록 제거
-    initArchive();               // 다시 멤버 출력
-  }
-});
-    }
+    const tabMembersBtn = qs("#tabMembersBtn");
+    const moreBtn = qs("#moreBtn");
+    const archiveList = qs("#archiveList");
+    const moreMenu = qs("#moreMenu");
+    const updatePage = qs("#updatePage");
+    const managerPage = qs("#managerPage");
+
+    tabMembersBtn?.addEventListener("click", ()=>{
+      tabMembersBtn.classList.add("tab-btn--active");
+      moreBtn.classList.remove("tab-btn--active");
+
+      archiveList.classList.remove("hidden");
+      moreMenu.classList.add("hidden");
+      updatePage.classList.add("hidden");
+      managerPage.classList.add("hidden");
+
+      initArchive();
+    });
+
+    moreBtn?.addEventListener("click", ()=>{
+      moreBtn.classList.add("tab-btn--active");
+      tabMembersBtn.classList.remove("tab-btn--active");
+
+      archiveList.classList.add("hidden");
+      moreMenu.classList.remove("hidden");
+      updatePage.classList.add("hidden");
+      managerPage.classList.add("hidden");
+    });
+
+    qs("#updateBtn")?.addEventListener("click", ()=>{
+      moreMenu.classList.add("hidden");
+      updatePage.classList.remove("hidden");
+    });
+
+    qs("#managerBtn")?.addEventListener("click", ()=>{
+      moreMenu.classList.add("hidden");
+      managerPage.classList.remove("hidden");
+    });
+
+    qs("#closeUpdateBtn")?.addEventListener("click", ()=>{
+      updatePage.classList.add("hidden");
+      moreMenu.classList.remove("hidden");
+    });
+
+    qs("#closeManagerPageBtn")?.addEventListener("click", ()=>{
+      managerPage.classList.add("hidden");
+      moreMenu.classList.remove("hidden");
+    });
+
+  } else if(path.endsWith("member.html")){
+    initMember();
+  } else if(path.endsWith("chat.html")){
+    initChat();
   }
 });
