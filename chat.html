@@ -1,0 +1,55 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <title>Chat | Fan Bubble</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+  <script defer src="app.js"></script>
+  <style>
+    .exit-button {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-size: 28px;
+      background: none;
+      border: none;
+      color: #333;
+      cursor: pointer;
+      z-index: 10;
+      transition: color 0.2s;
+    }
+    .exit-button:hover {
+      color: #ff5b5b;
+    }
+  </style>
+</head>
+<body class="app-bg">
+  <div id="app" class="app-frame app-frame--chat">
+
+    <!-- 엑스 버튼 (뒤로가기 기능) -->
+    <button class="exit-button" onclick="history.back()">×</button>
+
+    <header class="chat-header">
+      <!-- "←" 버튼 삭제 -->
+      <h2 id="chatMemberName" class="chat-header-title"></h2>
+    </header>
+
+    <div id="chatScroll" class="chat-scroll"></div>
+
+    <!-- nickname modal -->
+    <div id="nickModal" class="modal hidden">
+      <div class="modal-card">
+        <h3>내 닉네임 설정</h3>
+        <input id="nickInput" type="text" placeholder="닉네임 입력" maxlength="20" />
+        <div class="modal-actions">
+          <button type="button" class="secondary-btn" onclick="closeNickModal()">취소</button>
+          <button type="button" class="primary-btn" onclick="saveNickname()">확인</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
