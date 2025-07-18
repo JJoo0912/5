@@ -1,0 +1,96 @@
+<!-- manager.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>관리자 메뉴 | Fan Bubble</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="app-bg">
+  <div class="app-frame" id="authSection">
+    <header class="app-header app-header--center">
+      <h1 class="app-title">관리자 로그인</h1>
+    </header>
+    <main class="content content--padded">
+      <input type="password" id="password" placeholder="비밀번호 입력" />
+      <button onclick="checkPassword()">로그인</button>
+    </main>
+  </div>
+
+  <div class="app-frame hidden" id="adminSection">
+    <header class="app-header app-header--center">
+      <h1 class="app-title">관리자 메뉴</h1>
+    </header>
+    <main class="content content--padded">
+      <h2>팬 문의 확인</h2>
+      <div id="inquiryList"></div>
+
+      <h2>채팅 업로드</h2>
+      <label>멤버 선택</label>
+      <select id="chatMember">
+        <option value="Gunil">건일</option>
+        <option value="Jeongsu">정수</option>
+        <option value="Gaon">가온</option>
+        <option value="Ode">오드</option>
+        <option value="Junhan">준한</option>
+        <option value="Jooyeon">주연</option>
+      </select>
+
+      <label>날짜/시간</label>
+      <input type="text" id="chatTime" placeholder="예: 오후 3:20" />
+
+      <label>채팅 내용</label>
+      <textarea id="chatText" rows="3" placeholder="텍스트 또는 이미지 URL 입력"></textarea>
+
+      <button onclick="uploadChat()">업로드</button>
+    </main>
+  </div>
+
+  <script>
+    function checkPassword() {
+      const input = document.getElementById('password').value;
+      if (input === "0912") {
+        document.getElementById('authSection').classList.add('hidden');
+        document.getElementById('adminSection').classList.remove('hidden');
+        loadInquiries();
+      } else {
+        alert("비밀번호가 틀렸습니다.");
+      }
+    }
+
+    function loadInquiries() {
+      const list = document.getElementById('inquiryList');
+      const data = JSON.parse(localStorage.getItem('inquiries') || '[]');
+      if (data.length === 0) {
+        list.innerHTML = "<p>문의가 없습니다.</p>";
+      } else {
+        list.innerHTML = data.map(i =>
+          `<div class="inquiry-item">
+            <strong>${i.member}</strong> (${i.date})<br>
+            ${i.text}
+          </div>`).join("<hr>");
+      }
+    }
+
+    function uploadChat() {
+      const member = document.getElementById('chatMember').value;
+      const time = document.getElementById('chatTime').value;
+      const text = document.getElementById('chatText').value.trim();
+
+      if (!time || !text) {
+        alert("모든 항목을 입력해주세요!");
+        return;
+      }
+
+      const newChat = { time, text };
+      const key = `chatData_${member}`;
+      const existing = JSON.parse(localStorage.getItem(key) || '[]');
+      existing.push(newChat);
+      localStorage.setItem(key, JSON.stringify(existing));
+
+      alert("채팅이 업로드되었습니다.");
+    }
+  </script>
+</body>
+</html>
