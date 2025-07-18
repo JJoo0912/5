@@ -1,0 +1,58 @@
+<!-- update.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>문의하기 | Fan Bubble</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="app-bg">
+  <div class="app-frame">
+    <header class="app-header app-header--center">
+      <h1 class="app-title">문의하기</h1>
+    </header>
+    <main class="content content--padded">
+      <label>멤버 선택</label>
+      <select id="inquiryMember">
+        <option value="Gunil">건일</option>
+        <option value="Jeongsu">정수</option>
+        <option value="Gaon">가온</option>
+        <option value="Ode">오드</option>
+        <option value="Junhan">준한</option>
+        <option value="Jooyeon">주연</option>
+      </select>
+
+      <label>날짜 선택</label>
+      <input type="date" id="inquiryDate">
+
+      <label>문의 내용</label>
+      <textarea id="inquiryText" rows="5" placeholder="문의 내용을 입력하세요"></textarea>
+
+      <button onclick="submitInquiry()">전송</button>
+    </main>
+  </div>
+
+  <script>
+    function submitInquiry() {
+      const member = document.getElementById('inquiryMember').value;
+      const date = document.getElementById('inquiryDate').value;
+      const text = document.getElementById('inquiryText').value.trim();
+
+      if (!date || !text) {
+        alert("모든 항목을 입력해주세요!");
+        return;
+      }
+
+      const inquiry = { member, date, text };
+
+      const stored = JSON.parse(localStorage.getItem('inquiries') || '[]');
+      stored.push(inquiry);
+      localStorage.setItem('inquiries', JSON.stringify(stored));
+
+      alert("문의가 전송되었습니다!");
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>
